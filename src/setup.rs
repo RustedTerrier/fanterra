@@ -6,6 +6,7 @@ pub fn create_world() {
     println!("{}", seed);
     let world_name = create_name(&seed, 5);
     println!("{}", world_name);
+    create_map(&seed);
 }
 
 fn create_name(seed: &String, len: u32) -> String {
@@ -72,11 +73,11 @@ fn create_seed() -> String {
 
 fn create_map(seed: &String) {
     let mut l: u64 = change_seed(seed.parse::<u64>().unwrap());
-    l = change_seed(p1);
-    l = change_seed(p1);
-    l = change_seed(p1);
+    l = change_seed(l);
+    l = change_seed(l);
+    l = change_seed(l);
     let map_style: (u8, u8, u8);
-    match (l % 6) {
+    match l % 6 {
         0 => map_style = (11, 9, 8),
         1 => map_style = (11, 8, 9),
         2 => map_style = (9, 11, 8),
@@ -85,7 +86,54 @@ fn create_map(seed: &String) {
         5 => map_style = (8, 11, 9),
         _ => map_style = (0, 10, 0),
     }
-    let p1 = Vec::with_capacity(128);
+    let mut p1: Vec<u8> = Vec::with_capacity(map_style.0.into());
+    let mut p2: Vec<u8> = Vec::with_capacity(map_style.1.into());
+    let mut p3: Vec<u8> = Vec::with_capacity(map_style.2.into());
+    p1 = add_path(map_style.0, l, 1);
+    let mut i: u8 = 0;
+    while i < map_style.0 {
+        l = change_seed(l);
+        i += 1;
+    }
+    i = 0;
+    p2 = add_path(map_style.1, l, 2);
+    while i < map_style.1 {
+        l = change_seed(l);
+        i += 1;
+    }
+    p3 = add_path(map_style.2, change_seed(l), 3);
+
+    println!("{:?}\n{:?}\n{:?}", p1, p2, p3);
+}
+
+fn add_path(length: u8, mut l2: u64, num: u8) -> Vec<u8> {
+    let mut p1: Vec<u8> = Vec::with_capacity(length.into());
+    l2 = change_seed(l2);
+    let mut choice: u8 = (l2 % 7) as u8;
+    p1.push(choice);
+    if num == 1 {
+        p1.push(1);
+    } else {
+        l2 = change_seed(l2);
+        choice = (l2 % 7) as u8;
+        p1.push(choice);
+    }
+
+    let mut i: u8 = 0;
+    while i < (length - 3) {
+        l2 = change_seed(l2);
+        choice = (l2 % 7) as u8;
+        p1.push(choice);
+        i += 1;
+    }
+    if length == 11 {
+        p1.push(7)
+    } else {
+        l2 = change_seed(l2);
+        choice = (l2 % 7) as u8;
+        p1.push(choice);
+    }
+    p1
 }
 
 fn change_seed(mut number: u64) -> u64 {
