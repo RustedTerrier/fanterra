@@ -11,6 +11,15 @@ pub fn create_world() {
     serialize_base_stuff(world_name, seed).expect("Can't create a world file");
 }
 
+pub fn setup_game(path: String) -> Game {
+    let map = create_map(&read_file(&path));
+    let game = Game {
+        map: map,
+        seed: read_file(&path),
+    };
+    game
+}
+
 fn create_name(seed: &String, len: u32) -> String {
     let vowels: [char; 5] = ['A', 'E', 'I', 'O', 'U'];
     //Screw y
@@ -73,8 +82,8 @@ fn create_seed() -> String {
     seed.to_string()
 }
 
-fn create_map(seed: &String) {
-    let mut l: u64 = change_seed(seed.parse::<u64>().unwrap());
+pub fn create_map(seed: &u64) -> Map {
+    let mut l: u64 = change_seed(*seed);
     l = change_seed(l);
     l = change_seed(l);
     l = change_seed(l);
@@ -104,8 +113,12 @@ fn create_map(seed: &String) {
         i += 1;
     }
     p3 = add_path(map_style.2, change_seed(l), 3);
-
-    println!("{:?}\n{:?}\n{:?}", p1, p2, p3);
+    let f_map = Map {
+        pa1: p1,
+        pa2: p2,
+        pa3: p3,
+    };
+    f_map
 }
 
 fn add_path(length: u8, mut l2: u64, num: u8) -> Vec<u8> {
@@ -161,7 +174,17 @@ fn serialize_base_stuff(world_name: String, seed: u64) -> std::io::Result<()> {
         }
         match fs::read(&world_nam3) {
             Ok(_) => i += 1,
-            Err(why) => file_not_ready = false,
+            Err(why) => {
+                if i == 0 {
+                    let y2 = why;
+                    if i != 0 {
+                        println!("{}", y2);
+                    }
+                    file_not_ready = false;
+                } else {
+                    file_not_ready = false;
+                }
+            }
         }
     }
     if i != 0 {
@@ -171,4 +194,45 @@ fn serialize_base_stuff(world_name: String, seed: u64) -> std::io::Result<()> {
     }
     fs::write(world_nam3, seed.to_le_bytes())?;
     Ok(())
+}
+
+pub fn read_worlds() -> Vec<String> {
+    let entries = fs::read_dir("worlds").unwrap();
+    let mut v = Vec::new();
+    let mut j = 0;
+    for i in entries {
+        j += 1;
+        let j_s = format!("{} ", &j.to_string());
+        v.push(
+            i.unwrap()
+                .path()
+                .display()
+                .to_string()
+                .replace("worlds/", &j_s)
+                .replace(".fanterra", ".fanterra\n"),
+        );
+    }
+
+    v
+}
+
+fn read_file(world: &String) -> u64 {
+    let path = format!("worlds/{}", world);
+    let file = fs::read(path).unwrap();
+    let bytes: [u8; 8] = [
+        file[0], file[1], file[2], file[3], file[4], file[5], file[6], file[7],
+    ];
+    let seed = u64::from_le_bytes(bytes);
+    seed
+}
+
+pub struct Game {
+    pub map: Map,
+    pub seed: u64,
+}
+
+pub struct Map {
+    pa1: Vec<u8>,
+    pa2: Vec<u8>,
+    pa3: Vec<u8>,
 }

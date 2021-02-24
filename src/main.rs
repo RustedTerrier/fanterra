@@ -1,4 +1,5 @@
 mod setup;
+use std::fs;
 use std::io;
 
 fn main() {
@@ -18,6 +19,25 @@ fn start_screen() {
     }
     if choice[0..choice.len() - 1] == String::from("2") {
         //If you want to play an existing game, fuck you.
+        let v = setup::read_worlds();
+        let mut v_s: String = v.into_iter().collect();
+        v_s = v_s[0..v_s.len() - 2].to_string();
+        println!(
+            "Choose from each world, with a corresponding number: \n\r{}",
+            &v_s
+        );
+        v_s = setup::read_worlds().into_iter().collect();
+        let mut world = String::new();
+        io::stdin()
+            .read_line(&mut world)
+            .expect("Something went wrong reading your input.");
+        let worldnum = world.replace("\n", "").parse::<u32>().unwrap() - 1;
+        let worldv: Vec<&str> = v_s.split("\n").collect();
+        world = worldv[worldnum as usize].to_string();
+        world = world[2..].to_string();
+
+        let game = setup::setup_game(world);
+        println!("{}", game.seed);
     }
     if choice[0..choice.len() - 1] == String::from("3") {
         //If you want to quit, quit.
