@@ -1,12 +1,14 @@
 use rand::Rng;
+use std::fs;
 use std::io;
+use std::path::Path;
 
 pub fn create_world() {
-    let seed = create_seed();
+    let seed = create_seed().parse::<u64>().unwrap();
     println!("{}", seed);
-    let world_name = create_name(&seed, 5);
+    let world_name = create_name(&seed.to_string(), 5);
     println!("{}", world_name);
-    create_map(&seed);
+    serialize_base_stuff(world_name, seed).expect("Can't create a world file");
 }
 
 fn create_name(seed: &String, len: u32) -> String {
@@ -137,7 +139,36 @@ fn add_path(length: u8, mut l2: u64, num: u8) -> Vec<u8> {
 }
 
 fn change_seed(mut number: u64) -> u64 {
-    number = number.overflowing_mul(3838528).0;
-    number = number.overflowing_add(873821).0 / 582;
+    number = number.overflowing_mul(3838528834).0;
+    number = number.overflowing_add(873821).0;
     number
+}
+
+fn serialize_base_stuff(world_name: String, seed: u64) -> std::io::Result<()> {
+    let mut file_not_ready = true;
+    let mut i = 0;
+    let mut world_nam3: String;
+    if Path::new("worlds").exists() {
+    } else {
+        fs::create_dir("worlds")?;
+    }
+    while file_not_ready {
+        if i == 0 {
+            world_nam3 = format!("worlds/{}.fanterra", world_name);
+        } else {
+            println!("{}", i);
+            world_nam3 = format!("worlds/{}({}).fanterra", world_name, i);
+        }
+        match fs::read(&world_nam3) {
+            Ok(_) => i += 1,
+            Err(why) => file_not_ready = false,
+        }
+    }
+    if i != 0 {
+        world_nam3 = format!("worlds/{}({}).fanterra", world_name, i);
+    } else {
+        world_nam3 = format!("worlds/{}.fanterra", world_name);
+    }
+    fs::write(world_nam3, seed.to_le_bytes())?;
+    Ok(())
 }
