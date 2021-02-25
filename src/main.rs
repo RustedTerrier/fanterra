@@ -1,5 +1,4 @@
 mod setup;
-use std::fs;
 use std::io;
 
 fn main() {
@@ -21,7 +20,7 @@ fn start_screen() {
         //If you want to play an existing game, fuck you.
         let v = setup::read_worlds();
         let mut v_s: String = v.into_iter().collect();
-        v_s = v_s[0..v_s.len() - 2].to_string();
+        v_s = v_s[0..v_s.len() - 1].to_string();
         println!(
             "Choose from each world, with a corresponding number: \n\r{}",
             &v_s
