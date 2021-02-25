@@ -15,7 +15,9 @@ pub fn create_world() {
 pub fn setup_game(path: String) -> Game {
     let map = create_map(&read_file(&path));
     let game = Game {
-        map: map,
+        pa1: map.pa1,
+        pa2: map.pa2,
+        pa3: map.pa3,
         seed: read_file(&path),
     };
     game
@@ -195,6 +197,12 @@ fn serialize_base_stuff(world_name: String, seed: u64) -> std::io::Result<()> {
     } else {
         world_nam3 = format!(".fanterra/worlds/{}.fanterra", world_name);
     }
+    println!(
+        "Your world name is {}.\n",
+        world_nam3
+            .replace(".fanterra/worlds/", "")
+            .replace(".fanterra", ".fanterra")
+    );
     fs::write(world_nam3, seed.to_le_bytes())?;
     Ok(())
 }
@@ -230,8 +238,10 @@ fn read_file(world: &String) -> u64 {
 }
 
 pub struct Game {
-    pub map: Map,
     pub seed: u64,
+    pub pa1: Vec<u8>,
+    pub pa2: Vec<u8>,
+    pub pa3: Vec<u8>,
 }
 
 pub struct Map {
