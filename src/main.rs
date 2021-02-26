@@ -1,5 +1,6 @@
 mod game;
 mod setup;
+use std::env;
 use std::io;
 
 fn main() {
@@ -15,51 +16,38 @@ fn start_screen() {
         .expect("Failed to read line");
     if choice[0..choice.len() - 1] == String::from("1") {
         //If you want to create a new world, create a new world.
-        setup::create_world();
-        let v = setup::read_worlds();
-        let mut v_s: String = v.into_iter().collect();
-        v_s = v_s[0..v_s.len() - 1].to_string();
-        println!(
-            "Choose from each world, with a corresponding number: \n\r{}",
-            &v_s
-        );
-        v_s = setup::read_worlds().into_iter().collect();
-        let mut world = String::new();
-        io::stdin()
-            .read_line(&mut world)
-            .expect("Something went wrong reading your input.");
-        let worldnum = world.replace("\n", "").parse::<u32>().unwrap() - 1;
-        let worldv: Vec<&str> = v_s.split("\n").collect();
-        world = worldv[worldnum as usize].to_string();
-        world = world[2..].to_string();
-        let game = setup::setup_game(world);
-        game::start_game(game.seed, game.pa1, game.pa2, game.pa3);
+        let hme = env::var("HOME").unwrap();
+        setup::create_world(hme);
+        play_game();
     }
     if choice[0..choice.len() - 1] == String::from("2") {
-        //If you want to play an existing game, fuck you.
-        let v = setup::read_worlds();
-        let mut v_s: String = v.into_iter().collect();
-        v_s = v_s[0..v_s.len() - 1].to_string();
-        println!(
-            "Choose from each world, with a corresponding number: \n\r{}",
-            &v_s
-        );
-        v_s = setup::read_worlds().into_iter().collect();
-        let mut world = String::new();
-        io::stdin()
-            .read_line(&mut world)
-            .expect("Something went wrong reading your input.");
-        let worldnum = world.replace("\n", "").parse::<u32>().unwrap() - 1;
-        let worldv: Vec<&str> = v_s.split("\n").collect();
-        world = worldv[worldnum as usize].to_string();
-        world = world[2..].to_string();
-
-        let game = setup::setup_game(world);
-        println!("{}\n", game.seed);
-        game::start_game(game.seed, game.pa1, game.pa2, game.pa3);
+        play_game();
     }
     if choice[0..choice.len() - 1] == String::from("3") {
         //If you want to quit, quit.
         println!("Quiting...");
     }
+}
+
+fn play_game() {
+    let v = setup::read_worlds(env::var("HOME").unwrap());
+    let mut v_s: String = v.into_iter().collect();
+    v_s = v_s[0..v_s.len() - 1].to_string();
+    println!(
+        "Choose from each world, with a corresponding number: \n\r{}",
+        &v_s
+    );
+    v_s = setup::read_worlds(env::var("HOME").unwrap())
+        .into_iter()
+        .collect();
+    let mut world = String::new();
+    io::stdin()
+        .read_line(&mut world)
+        .expect("Something went wrong reading your input.");
+    let worldnum = world.replace("\n", "").parse::<u32>().unwrap() - 1;
+    let worldv: Vec<&str> = v_s.split("\n").collect();
+    world = worldv[worldnum as usize].to_string();
+    world = world[2..].to_string();
+    let game = setup::setup_game(world, env::var("HOME").unwrap());
+    game::start_game(game.seed, game.pa1, game.pa2, game.pa3);
 }

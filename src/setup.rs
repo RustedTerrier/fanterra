@@ -4,21 +4,21 @@ use std::io;
 use std::panic;
 use std::path::Path;
 
-pub fn create_world() {
+pub fn create_world(home: String) {
     let seed = create_seed().parse::<u64>().unwrap();
     println!("{}", seed);
     let world_name = create_name(&seed.to_string(), 5);
     println!("{}", world_name);
-    serialize_base_stuff(world_name, seed).expect("Can't create a world file");
+    serialize_base_stuff(world_name, seed, home).expect("Can't create a world file");
 }
 
-pub fn setup_game(path: String) -> Game {
-    let map = create_map(&read_file(&path));
+pub fn setup_game(path: String, home: String) -> Game {
+    let map = create_map(&read_file(&path, &home));
     let game = Game {
         pa1: map.pa1,
         pa2: map.pa2,
         pa3: map.pa3,
-        seed: read_file(&path),
+        seed: read_file(&path, &home),
     };
     game
 }
@@ -163,19 +163,23 @@ fn change_seed(mut number: u64) -> u64 {
     number
 }
 
-fn serialize_base_stuff(world_name: String, seed: u64) -> std::io::Result<()> {
+fn serialize_base_stuff(world_name: String, seed: u64, home: String) -> std::io::Result<()> {
     let mut file_not_ready = true;
     let mut i = 0;
     let mut world_nam3: String;
-    if Path::new(".fanterra/worlds").exists() {
+    let path = format!("{}/.fanterra/worlds", home);
+    if Path::new(&path).exists() {
     } else {
-        fs::create_dir_all(".fanterra/worlds")?;
+        fs::create_dir_all(&path)?;
     }
+    let mut actual_world_name: String;
     while file_not_ready {
         if i == 0 {
-            world_nam3 = format!(".fanterra/worlds/{}.fanterra", world_name);
+            world_nam3 = format!("{}/{}.fanterra", &path, world_name);
+            actual_world_name = format!("{}.fanterra", world_name);
         } else {
-            world_nam3 = format!(".fanterra/worlds/{}({}).fanterra", world_name, i);
+            world_nam3 = format!("{}/{}({}).fanterra", &path, world_name, i);
+            actual_world_name = format!("{}({}).fanterra", world_name, i);
         }
         match fs::read(&world_nam3) {
             Ok(_) => i += 1,
@@ -192,43 +196,37 @@ fn serialize_base_stuff(world_name: String, seed: u64) -> std::io::Result<()> {
             }
         }
     }
-    if i != 0 {
-        world_nam3 = format!(".fanterra/worlds/{}({}).fanterra", world_name, i);
+    if i == 0 {
+        world_nam3 = format!("{}/{}.fanterra", &path, world_name);
+        actual_world_name = format!("{}.fanterra", world_name);
     } else {
-        world_nam3 = format!(".fanterra/worlds/{}.fanterra", world_name);
+        world_nam3 = format!("{}/{}({}).fanterra", &path, world_name, i);
+        actual_world_name = format!("{}({}).fanterra", world_name, i);
     }
-    println!(
-        "Your world name is {}.\n",
-        world_nam3
-            .replace(".fanterra/worlds/", "")
-            .replace(".fanterra", ".fanterra")
-    );
+    println!("Your world name is {}.\n", actual_world_name);
     fs::write(world_nam3, seed.to_le_bytes())?;
     Ok(())
 }
 
-pub fn read_worlds() -> Vec<String> {
-    let entries = fs::read_dir(".fanterra/worlds").unwrap();
+pub fn read_worlds(home: String) -> Vec<String> {
+    let path = format!("{}/.fanterra/worlds", home);
+    let entries = fs::read_dir(&path).unwrap();
     let mut v = Vec::new();
     let mut j = 0;
     for i in entries {
         j += 1;
         let j_s = format!("{} ", &j.to_string());
-        v.push(
-            i.unwrap()
-                .path()
-                .display()
-                .to_string()
-                .replace(".fanterra/worlds/", &j_s)
-                .replace(".fanterra", ".fanterra\n"),
-        );
+        let item = i.unwrap().path().display().to_string();
+        let v2: Vec<&str> = item.split(".fanterra/worlds/").collect();
+        let world_name_real = format!("{}", v2[v2.len() - 1].to_string());
+        v.push(format!("{}{}\n", j_s, world_name_real));
     }
 
     v
 }
 
-fn read_file(world: &String) -> u64 {
-    let path = format!(".fanterra/worlds/{}", world);
+fn read_file(world: &String, home: &String) -> u64 {
+    let path = format!("{}/.fanterra/worlds/{}", home, world);
     let file = fs::read(path).unwrap();
     let bytes: [u8; 8] = [
         file[0], file[1], file[2], file[3], file[4], file[5], file[6], file[7],
