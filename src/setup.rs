@@ -172,14 +172,11 @@ fn serialize_base_stuff(world_name: String, seed: u64, home: String) -> std::io:
     } else {
         fs::create_dir_all(&path)?;
     }
-    let mut actual_world_name: String;
     while file_not_ready {
         if i == 0 {
             world_nam3 = format!("{}/{}.fanterra", &path, world_name);
-            actual_world_name = format!("{}.fanterra", world_name);
         } else {
             world_nam3 = format!("{}/{}({}).fanterra", &path, world_name, i);
-            actual_world_name = format!("{}({}).fanterra", world_name, i);
         }
         match fs::read(&world_nam3) {
             Ok(_) => i += 1,
@@ -196,6 +193,7 @@ fn serialize_base_stuff(world_name: String, seed: u64, home: String) -> std::io:
             }
         }
     }
+    let actual_world_name;
     if i == 0 {
         world_nam3 = format!("{}/{}.fanterra", &path, world_name);
         actual_world_name = format!("{}.fanterra", world_name);

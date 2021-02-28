@@ -27,9 +27,12 @@ pub fn start_game(seed: u64, map1: Vec<u8>, map2: Vec<u8>, map3: Vec<u8>) -> Cha
         "\nThe old man gives you a {}, sending you on your quest.",
         weapon
     );
+    let mut choice = String::new();
+    io::stdin()
+        .read_line(&mut choice)
+        .expect("Failed to read line");
     println!("\nBefore you leave, the old man talks to you again: \"There is a town on the left path after the fork, it's close \nby and they will help you if you're hurt.\"\nThen he leaves, and you embark on your journey.\n");
     println!("You walk down the given path and the journey is uneventful up until a fork in the road. You remember the old\nman saying there was a town somewhere to the left.\nDo you wish to go 1) To the left, 2) To the straight, or 3) To the right?");
-    let mut choice = String::new();
     io::stdin()
         .read_line(&mut choice)
         .expect("Failed to read line");
@@ -46,12 +49,13 @@ pub fn start_game(seed: u64, map1: Vec<u8>, map2: Vec<u8>, map3: Vec<u8>) -> Cha
 pub fn resume_game() {}
 
 fn fork_in_the_road(choice: String, world: World) {
+    let _thing;
     match choice.replace("\n", "").parse::<u8>().unwrap() {
-        1 => navigate_path(world.p1, 1),
-        2 => navigate_path(world.p2, 1),
-        3 => navigate_path(world.p3, 1),
-        _ => {}
-    }
+        1 => _thing = navigate_path(&world.p1, 1),
+        2 => _thing = navigate_path(&world.p2, 1),
+        3 => _thing = navigate_path(&world.p3, 1),
+        _ => _thing = 0,
+    };
 }
 
 pub struct Character {
@@ -66,6 +70,27 @@ pub struct World {
     p3: Vec<u8>,
 }
 
-fn navigate_path(path: Vec<u8>, area: u8) {
-    println!("{}", path[(area - 1) as usize]);
+fn navigate_map(world: World) {
+    let mut area = 1;
+    area = navigate_path(&world.p1, area);
+    loop {
+        area = navigate_path(&world.p1, area);
+    }
+}
+
+fn navigate_path(path: &Vec<u8>, area: u8) -> u8 {
+    let biome = match path[(area - 1) as usize] {
+        0 => "You enter a beautiful forest which eerily fades into darkness as the shadows of the trees cover the ground. It feels strangely calm yet threatening, what do you do?",
+        1 => "You enter a town, to the left you see a sort of hospital, up ahead is a tavern, and to the right are houses and a shop; the people feel are welcoming, what do you do?",
+        2 => "You walk into a plain of hills, you feel uneasy; you never know whats around the next hill but the green of the plants feels calming and it confuses you; what do you do?",
+        3 => "You enter an outpost and watch from afar as enemies enter and leave a large stone building; they are armed to the teeth. What do you do?",
+        4 => "You enter a barren wasteland, only sand covers the ground as far as you can see and it's hot to the touch, what do you do?",
+        5 => "You enter a swamp and water goes up to your waist. The murky water hides any predators from view and you feel scared. What do you do?",
+        6 => "You enter a beautiful forest which eerily fades into darkness as the shadows of the trees cover the ground. It feels strangely calm yet threatening, what do you do?",
+        7 => "You find yourself at the castle walls, what do you do?",
+        _ => "",
+    };
+
+    println!("{}", biome);
+    area
 }
