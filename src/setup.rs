@@ -103,26 +103,26 @@ pub fn create_map(seed: &u64) -> Map {
         5 => map_style = (8, 11, 9),
         _ => map_style = (0, 10, 0),
     }
-    let mut p1: Vec<u8> = Vec::with_capacity(map_style.0.into());
-    let mut p2: Vec<u8> = Vec::with_capacity(map_style.1.into());
-    let mut p3: Vec<u8> = Vec::with_capacity(map_style.2.into());
-    p1 = add_path(map_style.0, l, 1);
+    let mut path1: Vec<u8> = Vec::with_capacity(map_style.0.into());
+    let mut path2: Vec<u8> = Vec::with_capacity(map_style.1.into());
+    let mut path3: Vec<u8> = Vec::with_capacity(map_style.2.into());
+    path1 = add_path(map_style.0, l, 1);
     let mut i: u8 = 0;
     while i < map_style.0 {
         l = change_seed(l);
         i += 1;
     }
     i = 0;
-    p2 = add_path(map_style.1, l, 2);
+    path2 = add_path(map_style.1, l, 2);
     while i < map_style.1 {
         l = change_seed(l);
         i += 1;
     }
-    p3 = add_path(map_style.2, change_seed(l), 3);
+    path3 = add_path(map_style.2, change_seed(l), 3);
     let f_map = Map {
-        pa1: p1,
-        pa2: p2,
-        pa3: p3,
+        pa1: path1,
+        pa2: path2,
+        pa3: path3,
     };
     f_map
 }
