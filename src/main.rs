@@ -8,13 +8,13 @@ fn main() {
 }
 
 fn start_screen() {
-    println!("AMMMMMMMMMMA     AMMA      AMMMA     AMA  AMMMMMMMMMMMMMA  AMMMMMMMMMMA  AMMMMMA.     AMMMMMA.         AMMA\n\
-              MMMMMMMMMMMV    AMVVMA     MMMMMA    MMM  VMMMMMMMMMMMMMV  MMMMMMMMMMMV  MMMMMMMMA    MMMMMMMMA       AMVVMA\n\
-              MMM            AMV  VMA    MMM VMA   MMM        MMM        MMM           MMM`   `MA   MMM`   `MA     AMV  VMA\n\
-              MMM           AMV    VMA   MMM  VMA  MMM        MMM        MMM           MMM     ;MA  MMM     ;MA   AMV    VMA\n\
+    println!("AMMMMMMMMMMA     AMMA      AMMMA     AMA  AMMMMMMMMMMMMMA  AMMMMMMMMMMA  AMMMMMMA.    AMMMMMMA.        AMMA\n\
+              MMMMMMMMMMMV    AMVVMA     MMMMMA    MMM  VMMMMMMMMMMMMMV  MMMMMMMMMMMV  MMMMMMMMMA   MMMMMMMMMA      AMVVMA\n\
+              MMM            AMV  VMA    MMM VMA   MMM        MMM        MMM           MMM`   `VMA  MMM`   `VMA    AMV  VMA\n\
+              MMM           AMV    VMA   MMM  VMA  MMM        MMM        MMM           MMM     ;MM  MMM     ;MM   AMV    VMA\n\
               MMMMMMMMA    AMV      VMA  MMM   VMA MMM        MMM        MMMMMMMMMA    MMM.   .AMV  MMM.   .AMV  AMV      VMA\n\
               MMMMMMMMV    MMMMMMMMMMMM  MMM    VMAMMM        MMM        MMMMMMMMMV    MMMMMMMMMV   MMMMMMMMMV   MMMMMMMMMMMM\n\
-              MMM          MMMMMMMMMMMM  MMM     VMMMM        MMM        MMM           MMMMMMMMA    MMMMMMMMA    MMMMMMMMMMMM\n\
+              MMM          MMMMMMMMMMMM  MMM     VMMMM        MMM        MMM           MMMMMMMMA`   MMMMMMMMA`   MMMMMMMMMMMM\n\
               MMM          MMM      MMM  MMM      VMMM        MMM        MMMMMMMMMMMA  MMM    VMA   MMM    VMA   MMM      MMM\n\
               VMV          VMV      VMV  VMV       VMV        VMV        VMMMMMMMMMMV  VMV     VMA  VMV     VMA  VMV      VMV\n\
               ");
@@ -40,6 +40,8 @@ fn start_screen() {
         println!("Quiting...");
     }
 }
+//test
+
 
 fn play_game() {
     let mut worlds_string: String = setup::read_worlds(env::var("HOME").unwrap())
@@ -68,5 +70,5 @@ fn play_game() {
     let game = setup::setup_game(world, env::var("HOME").unwrap());
 
     // pa1, is supposed to mean path1, I'm just lazy at typing.
-    game::start_game(game.seed, game.pa1, game.pa2, game.pa3);
+    let mut game_data = game::start_game(game.seed, game.pa1, game.pa2, game.pa3);
 }

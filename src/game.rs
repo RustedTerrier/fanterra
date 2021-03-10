@@ -99,9 +99,39 @@ pub fn start_game(seed: u64, map1: Vec<u8>, map2: Vec<u8>, map3: Vec<u8>) -> Gam
 
 pub fn resume_game() {}
 
-fn fork_in_the_road(choice: String, mut world: GameData) -> GameData {
+fn fork_in_the_road(mut choice: String, mut world: GameData) -> GameData {
+    // Thing is here for the match statement so I don't have to set stuff to stuff it won't be.
     let _thing;
-    match choice.replace("\n", "").parse::<u8>().unwrap() {
+
+    let choice_as_u8: u8;
+    loop {
+        match &choice[..] {
+            "1\n" => {
+                choice_as_u8 = 1;
+                break;
+            }
+            "2\n" => {
+                choice_as_u8 = 2;
+                break;
+            }
+            "3\n" => {
+                choice_as_u8 = 3;
+                break;
+            }
+            _ => {
+                // Check if you insert the right thing this time.
+                println!("Do you wish to go 1) To the left, 2) Straight ahead, or 3) To the right? (This has to be a number from 1-3)");
+                // Reset choice because for some reason it just gets added to otherwise
+                choice = "".to_string();
+                io::stdin()
+                    .read_line(&mut choice)
+                    .expect("Failed to read line");
+            }
+        }
+    }
+
+    // Set the current path and area.
+    match choice_as_u8 {
         1 => {
             _thing = {
                 world.area = navigate_path(&world.p1, 1);
@@ -122,6 +152,7 @@ fn fork_in_the_road(choice: String, mut world: GameData) -> GameData {
         }
         _ => _thing = (),
     };
+    // Return updated world with the current area and path.
     world
 }
 
@@ -161,3 +192,5 @@ fn navigate_path(path: &Vec<u8>, area: u8) -> u8 {
     println!("{}", biome);
     area
 }
+
+fn encounter_enemy(area: u8) {}
