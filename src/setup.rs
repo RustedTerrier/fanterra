@@ -1,8 +1,6 @@
+use std::{fs, io, panic, path::Path};
+
 use rand::Rng;
-use std::fs;
-use std::io;
-use std::panic;
-use std::path::Path;
 
 pub fn create_world(home: String) {
     let seed = create_seed().parse::<u64>().unwrap();
@@ -15,20 +13,20 @@ pub fn create_world(home: String) {
 pub fn setup_game(path: String, home: String) -> Game {
     let map = create_map(&read_file(&path, &home));
     let game = Game {
-        pa1: map.pa1,
-        pa2: map.pa2,
-        pa3: map.pa3,
-        seed: read_file(&path, &home),
+        pa1:  map.pa1,
+        pa2:  map.pa2,
+        pa3:  map.pa3,
+        seed: read_file(&path, &home)
     };
     game
 }
 
 fn create_name(seed: &String, len: u32) -> String {
     let vowels: [char; 5] = ['A', 'E', 'I', 'O', 'U'];
-    //Screw y
+    // Screw y
     let consonants: [char; 19] = [
         'W', 'R', 'T', 'P', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Z', 'X', 'C', 'V', 'B', 'N',
-        'M',
+        'M'
     ];
     let mut number = seed.parse::<f32>().unwrap();
     number = number * 0.03;
@@ -74,15 +72,16 @@ fn create_seed() -> String {
         io::stdin()
             .read_line(&mut seed2)
             .expect("Failed to read line.");
-        seed = &seed2[0..seed2.len() - 1];
+        seed = &seed2[0 .. seed2.len() - 1];
         if seed.chars().count() != 12 {
             panic!("It has to be 12 digits long...");
         }
-    } else {
+    }
+    else {
         while seed2.len() < 12 {
             seed2 = format!("{}{}", seed2, rand::thread_rng().gen_range(0, 10));
         }
-        seed = &seed2[0..];
+        seed = &seed2[0 ..];
     }
 
     seed.to_string()
@@ -95,13 +94,13 @@ pub fn create_map(seed: &u64) -> Map {
     l = change_seed(l);
     let map_style: (u8, u8, u8);
     match l % 6 {
-        0 => map_style = (11, 9, 8),
-        1 => map_style = (11, 8, 9),
-        2 => map_style = (9, 11, 8),
-        3 => map_style = (9, 8, 11),
-        4 => map_style = (8, 9, 11),
-        5 => map_style = (8, 11, 9),
-        _ => map_style = (0, 10, 0),
+        | 0 => map_style = (11, 9, 8),
+        | 1 => map_style = (11, 8, 9),
+        | 2 => map_style = (9, 11, 8),
+        | 3 => map_style = (9, 8, 11),
+        | 4 => map_style = (8, 9, 11),
+        | 5 => map_style = (8, 11, 9),
+        | _ => map_style = (0, 10, 0)
     }
     let mut path1: Vec<u8> = Vec::with_capacity(map_style.0.into());
     let mut path2: Vec<u8> = Vec::with_capacity(map_style.1.into());
@@ -122,7 +121,7 @@ pub fn create_map(seed: &u64) -> Map {
     let f_map = Map {
         pa1: path1,
         pa2: path2,
-        pa3: path3,
+        pa3: path3
     };
     f_map
 }
@@ -134,7 +133,8 @@ fn add_path(length: u8, mut l2: u64, num: u8) -> Vec<u8> {
     p1.push(choice);
     if num == 1 {
         p1.push(1);
-    } else {
+    }
+    else {
         l2 = change_seed(l2);
         choice = (l2 % 7) as u8;
         p1.push(choice);
@@ -149,7 +149,8 @@ fn add_path(length: u8, mut l2: u64, num: u8) -> Vec<u8> {
     }
     if length == 11 {
         p1.push(7)
-    } else {
+    }
+    else {
         l2 = change_seed(l2);
         choice = (l2 % 7) as u8;
         p1.push(choice);
@@ -169,35 +170,39 @@ fn serialize_base_stuff(world_name: String, seed: u64, home: String) -> std::io:
     let mut world_nam3: String;
     let path = format!("{}/.fanterra/worlds", home);
     if Path::new(&path).exists() {
-    } else {
+    }
+    else {
         fs::create_dir_all(&path)?;
     }
     while file_not_ready {
         if i == 0 {
             world_nam3 = format!("{}/{}.fanterra", &path, world_name);
-        } else {
+        }
+        else {
             world_nam3 = format!("{}/{}({}).fanterra", &path, world_name, i);
         }
         match fs::read(&world_nam3) {
-            Ok(_) => i += 1,
-            Err(why) => {
+            | Ok(_) => i += 1,
+            | Err(why) => {
                 if i == 0 {
                     let y2 = why;
                     if i != 0 {
                         println!("{}", y2);
                     }
                     file_not_ready = false;
-                } else {
+                }
+                else {
                     file_not_ready = false;
                 }
-            }
+            },
         }
     }
     let actual_world_name;
     if i == 0 {
         world_nam3 = format!("{}/{}.fanterra", &path, world_name);
         actual_world_name = format!("{}.fanterra", world_name);
-    } else {
+    }
+    else {
         world_nam3 = format!("{}/{}({}).fanterra", &path, world_name, i);
         actual_world_name = format!("{}({}).fanterra", world_name, i);
     }
@@ -227,7 +232,7 @@ fn read_file(world: &String, home: &String) -> u64 {
     let path = format!("{}/.fanterra/worlds/{}", home, world);
     let file = fs::read(path).unwrap();
     let bytes: [u8; 8] = [
-        file[0], file[1], file[2], file[3], file[4], file[5], file[6], file[7],
+        file[0], file[1], file[2], file[3], file[4], file[5], file[6], file[7]
     ];
     let seed = u64::from_le_bytes(bytes);
     seed
@@ -235,13 +240,13 @@ fn read_file(world: &String, home: &String) -> u64 {
 
 pub struct Game {
     pub seed: u64,
-    pub pa1: Vec<u8>,
-    pub pa2: Vec<u8>,
-    pub pa3: Vec<u8>,
+    pub pa1:  Vec<u8>,
+    pub pa2:  Vec<u8>,
+    pub pa3:  Vec<u8>
 }
 
 pub struct Map {
     pa1: Vec<u8>,
     pa2: Vec<u8>,
-    pa3: Vec<u8>,
+    pa3: Vec<u8>
 }
