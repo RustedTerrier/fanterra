@@ -1,12 +1,17 @@
 mod game;
 mod setup;
+
 use std::{env, io};
 
 fn main() {
+    // if 2 < 3 {
+    // extern crate rodio;
+    // }
     start_screen();
 }
 
 fn start_screen() {
+    // print!("{}{}", 27 as char, "[38;5;3m");
     println!("AMMMMMMMMMMA     AMMA      AMA     AMA  AMMMMMMMMMMMMMA  AMMMMMMMMMMA  AMMMMMMA.    AMMMMMMA.        AMMA\n\
               MMMMMMMMMMMV    AMVVMA     MMMA    MMM  VMMMMMMMMMMMMMV  MMMMMMMMMMMV  MMMMMMMMMA   MMMMMMMMMA      AMVVMA\n\
               MMM            AMV  VMA    MMMMA   MMM        MMM        MMM           MMM`   `VMA  MMM`   `VMA    AMV  VMA\n\
@@ -17,6 +22,7 @@ fn start_screen() {
               MMM          MMM      MMM  MMM    VMMM        MMM        MMMMMMMMMMMA  MMM    VMA   MMM    VMA   MMM      MMM\n\
               VMV          VMV      VMV  VMV     VMV        VMV        VMMMMMMMMMMV  VMV     VMA  VMV     VMA  VMV      VMV\n\
               ");
+    // print!("{}{}", 27 as char, "[38;5;15m");
     println!("Do you want to do? 1) Create a new game, 2) Play an existing game, or 3) Quit?");
 
     let mut choice = String::new();

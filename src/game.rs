@@ -170,25 +170,20 @@ pub struct GameData {
     pub game_state: bool
 }
 
-fn navigate_map(world: GameData) {
-    let mut area = 1;
-    area = navigate_path(&world.p1, area);
-}
-
 pub fn navigate_path(path: &Vec<u8>, mut area: u8) -> u8 {
     // Set the message for entering a new area
     let biome = match path[(area - 1) as usize] {
         // 0 is a forest, 1 is a town, 2 is hills, 3 is an outpost, 4 is a desert, 5 is a swamp,
-        //   and 5 is an outpost
-        0 => "You enter a beautiful forest which eerily fades into darkness as the shadows of the trees cover the ground. It\n\rfeels strangely calm yet threatening, what do you do?",
-        1 => "You enter a town, to the left you see a sort of hospital, up ahead is a tavern, and to the right are houses and a\n\rshop; the people feel welcoming, what do you do?",
-        2 => "You walk into a plain of hills and you begin to feel uneasy; you never know whats around the next hill but the\n\rgreen of the plants feels calming and it confuses you; what do you do?",
-        3 => "You enter an outpost and watch from afar as enemies enter and leave a large stone building; they are armed to the\n\rteeth. What do you do?",
-        4 => "You enter a barren wasteland, only sand covers the ground as far as you can see and it's hot to the touch, what\n\rdo you do?",
-        5 => "You enter a swamp and water goes up to your waist. The murky water hides any predators from view and you feel \n\rscared. What do you do?",
-        6 => "You enter a beautiful forest which eerily fades into darkness as the shadows of the trees cover the ground. It \n\rfeels strangely calm yet threatening, what do you do?",
-        7 => "You find yourself at the castle walls, what do you do?",
-        _ => "",
+        //   and 6 is a hideout.
+        0 => format!("You enter a beautiful forest which eerily fades into darkness as the shadows of the trees cover the ground. It\n\rfeels strangely calm yet threatening, what do you do?"),
+        1 => format!("You enter a town, to the left you see a sort of hospital, up ahead is a tavern, and to the right are houses and a\n\rshop; the people feel welcoming, what do you do?"),
+        2 => format!("You walk into a plain of hills and you begin to feel uneasy; you never know whats around the next hill but the\n\rgreen of the plants feels calming and it confuses you; what do you do?"),
+        3 => format!("You enter an outpost and watch from afar as enemies enter and leave a large stone building; they are armed to the\n\rteeth. What do you do?"),
+        4 => format!("You enter a barren wasteland, only sand covers the ground as far as you can see and it's hot to the touch, what\n\rdo you do?"),
+        5 => format!("You enter a swamp and water goes up to your waist. The murky water hides any predators from view and you feel \n\rscared. What do you do?"),
+        6 => format!("You enter a beautiful forest which eerily fades into darkness as the shadows of the trees cover the ground. It \n\rfeels strangely calm yet threatening, what do you do?"),
+        7 => format!("You find yourself at the castle walls, what do you do?"),
+        _ => format!(""),
     };
 
     println!("{}", biome);
@@ -257,10 +252,11 @@ fn actions(situation: u8) -> String {
 fn look_around(biome: u8) {
     match biome {
         // 0 is a forest, 1 is a town, 2 is hills, 3 is an outpost, 4 is a desert, 5 is a swamp,
-        //   and 6 is an outpost
+        //   and 6 is a hideout.
         | 0 => {
             println!("You look around, the trees are far taller than you and the father the forest goes, the less light hits the\n\r\
-                      ground. You hear sounds of movement but you can't identify anything.");
+                      ground. You hear sounds of movement but you can't identify anything. There seems to be foot prints in the mud\n\r\
+                      and you see arrows sticking out of the ground just up ahead.");
         },
         | 1 => {
             println!("The townsfolk seem friendly. The pavement on the ground forms a diamond pattern and it looks like it's\n\r\
@@ -288,7 +284,8 @@ fn look_around(biome: u8) {
         },
         | 6 => {
             println!("You look around, the trees are far taller than you and the father the forest goes, the less light hits the\n\r\
-                      ground. You hear sounds of movement but you can't identify anything.");
+                      ground. You hear sounds of movement but you can't identify anything. There seems to be foot prints in the mud\n\r\
+                      and you see arrows sticking out of the ground just up ahead.");
         },
         | _ => {
             panic!("Uhh, this area doesn't exist or it doesn't support looking around.");
@@ -296,5 +293,5 @@ fn look_around(biome: u8) {
     }
 }
 
-fn encounter_enemy(area: u8, biome: &str) {
+fn encounter_enemy(area: u8, biome: &str, seed: u64) {
 }
