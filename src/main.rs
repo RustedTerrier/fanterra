@@ -33,12 +33,35 @@ fn start_screen() {
     if choice[0 .. choice.len() - 1] == String::from("1") {
         // If you want to create a new world, create a new world.
         let hme = env::var("HOME").unwrap();
-        setup::create_world(hme);
-        play_game();
+        let world_name = setup::create_world(hme);
+        play_game(world_name);
     }
     if choice[0 .. choice.len() - 1] == String::from("2") {
         // If you want to play an existing game, do that.
-        play_game();
+        let mut worlds_string: String = setup::read_worlds(env::var("HOME").unwrap())
+            .into_iter()
+            .collect();
+        worlds_string = worlds_string[0 .. worlds_string.len() - 1].to_string();
+
+        println!(
+            "Choose from each world, with a corresponding number: \n\r{}",
+            &worlds_string
+        );
+        worlds_string = setup::read_worlds(env::var("HOME").unwrap())
+            .into_iter()
+            .collect();
+
+        let mut world = String::new();
+        io::stdin()
+            .read_line(&mut world)
+            .expect("Something went wrong reading your input.");
+
+        let worldnum = world.replace("\n", "").parse::<u32>().unwrap() - 1;
+        let worldsplit: Vec<&str> = worlds_string.split("\n").collect();
+        world = worldsplit[worldnum as usize].to_string();
+        world = world[2 ..].to_string();
+
+        play_game(world);
     }
     if choice[0 .. choice.len() - 1] == String::from("3") {
         // If you want to quit, quit.
@@ -46,30 +69,7 @@ fn start_screen() {
     }
 }
 
-fn play_game() {
-    let mut worlds_string: String = setup::read_worlds(env::var("HOME").unwrap())
-        .into_iter()
-        .collect();
-    worlds_string = worlds_string[0 .. worlds_string.len() - 1].to_string();
-
-    println!(
-        "Choose from each world, with a corresponding number: \n\r{}",
-        &worlds_string
-    );
-    worlds_string = setup::read_worlds(env::var("HOME").unwrap())
-        .into_iter()
-        .collect();
-
-    let mut world = String::new();
-    io::stdin()
-        .read_line(&mut world)
-        .expect("Something went wrong reading your input.");
-
-    let worldnum = world.replace("\n", "").parse::<u32>().unwrap() - 1;
-    let worldsplit: Vec<&str> = worlds_string.split("\n").collect();
-    world = worldsplit[worldnum as usize].to_string();
-    world = world[2 ..].to_string();
-
+fn play_game(world: String) {
     let game = setup::setup_game(world, env::var("HOME").unwrap());
 
     // pa1, is supposed to mean path1, I'm just lazy at typing.

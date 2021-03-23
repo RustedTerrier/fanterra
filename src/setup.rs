@@ -1,13 +1,16 @@
+extern crate ron;
 use std::{fs, io, panic, path::Path};
 
+use ron::de::from_str;
+use serde::Deserialize;
 use rand::Rng;
 
-pub fn create_world(home: String) {
+pub fn create_world(home: String) -> String {
     let seed = create_seed().parse::<u64>().unwrap();
     println!("{}", seed);
     let world_name = create_name(&seed.to_string(), 5);
-    println!("{}", world_name);
-    serialize_base_stuff(world_name, seed, &home).expect("Can't create a world file");
+    let actual_world_name = serialize_base_stuff(world_name, seed, &home);
+    actual_world_name
 }
 
 pub fn setup_game(path: String, home: String) -> Game {
@@ -17,7 +20,7 @@ pub fn setup_game(path: String, home: String) -> Game {
         pa2:      map.pa2,
         pa3:      map.pa3,
         seed:     read_file(&path, &home),
-        settings: config(home)
+        settings: get_config(home)
     };
     game
 }
@@ -103,9 +106,9 @@ pub fn create_map(seed: &u64) -> Map {
         | 5 => map_style = (8, 11, 9),
         | _ => map_style = (0, 10, 0)
     }
-    let mut path1: Vec<u8> = Vec::with_capacity(map_style.0.into());
-    let mut path2: Vec<u8> = Vec::with_capacity(map_style.1.into());
-    let mut path3: Vec<u8> = Vec::with_capacity(map_style.2.into());
+    let path1: Vec<u8>;
+    let path2: Vec<u8>;
+    let path3: Vec<u8>;
     path1 = add_path(map_style.0, l, 1);
     let mut i: u8 = 0;
     while i < map_style.0 {
@@ -165,83 +168,29 @@ fn change_seed(mut number: u64) -> u64 {
     number
 }
 
-fn config(home: String) -> Settings {
-    let path = format!("{}/.fanterra/init.config", home);
+pub fn get_config(home: String) -> Config {
+    let path = format!("{}/.fanterra/init.ron", home);
     if !Path::new(&path).exists() {
         fs::write(
             &path,
-            "music: true\ncolors: false\ninfinite-inventory: false"
+            "(\nsound: true,\ncolor: false,\ninfinite_inv: false\n)"
         )
         .expect("Error creating config file, please create ~/.fanterra/init.config.");
     }
-    println!("{}", fs::read_to_string(&path).unwrap());
-    // Make sure the config is valid.
     let config_file_contents: String = fs::read_to_string(&path).unwrap();
-    let mut settings = Settings {
-        sound:    true,
-        color:    false,
-        infinite: false
-    };
-    if !config_file_contents.contains("music: ")
-        || !config_file_contents.contains("colors: ")
-        || !config_file_contents.contains("infinite-inventory: ")
-    {
-        panic!("Bad config file.");
-    }
-    else {
-        let lines: Vec<&str>;
-        lines = config_file_contents.split('\n').collect();
+    let config: Config = match from_str(&config_file_contents[..]) {
+        | Ok(x) => x,
+        | Err(e) => {
+            println!("Failed to load config: {}", e);
 
-        for c in lines {
-            if c.chars().nth(0) != Some('m')
-                && c.chars().nth(0) != Some('c')
-                && c.chars().nth(0) != Some('i')
-                && c.chars().nth(0) != Some('#')
-            {
-                panic!("Bad config file.");
-            }
-            else {
-                if c.chars().nth(0) != Some('#') {
-                    let mut conf: Vec<&str> = Vec::new();
-                    match c.chars().nth(0) {
-                        | Some('m') => {
-                            conf = c.split(':').collect();
-                            settings.sound =
-                                match &conf[1].replace(" ", "").replace("\n", "") as &str {
-                                    | "true" => true,
-                                    | "false" => false,
-                                    | _ => panic!("What the fuck just happened?")
-                                }
-                        },
-                        | Some('i') => {
-                            conf = c.split(':').collect();
-                            settings.infinite =
-                                match &conf[1].replace(" ", "").replace("\n", "") as &str {
-                                    | "true" => true,
-                                    | "false" => false,
-                                    | _ => panic!("What the fuck just happened?")
-                                }
-                        },
-                        | Some('c') => {
-                            conf = c.split(':').collect();
-                            settings.color =
-                                match &conf[1].replace(" ", "").replace("\n", "") as &str {
-                                    | "true" => true,
-                                    | "false" => false,
-                                    | _ => panic!("What the fuck just happened?")
-                                }
-                        },
-                        | _ => panic!("idk how this even happened...")
-                    }
-                }
-            }
+            std::process::exit(1);
         }
-    }
+    };
 
-    settings
+    config
 }
 
-fn serialize_base_stuff(world_name: String, seed: u64, home: &String) -> std::io::Result<()> {
+fn serialize_base_stuff(world_name: String, seed: u64, home: &String) -> String {
     let mut file_not_ready = true;
     let mut i = 0;
     let mut world_nam3: String;
@@ -249,7 +198,7 @@ fn serialize_base_stuff(world_name: String, seed: u64, home: &String) -> std::io
     if Path::new(&path).exists() {
     }
     else {
-        fs::create_dir_all(&path)?;
+        fs::create_dir_all(&path).expect("Couldn't create directory ~/.fanterra/worlds.");
     }
     while file_not_ready {
         if i == 0 {
@@ -284,8 +233,8 @@ fn serialize_base_stuff(world_name: String, seed: u64, home: &String) -> std::io
         actual_world_name = format!("{}({}).fanterra", world_name, i);
     }
     println!("Your world name is {}.\n", actual_world_name);
-    fs::write(world_nam3, seed.to_le_bytes())?;
-    Ok(())
+    fs::write(world_nam3, seed.to_le_bytes()).expect("Couldn't write to file");
+    actual_world_name
 }
 
 pub fn read_worlds(home: String) -> Vec<String> {
@@ -320,13 +269,14 @@ pub struct Game {
     pub pa1:      Vec<u8>,
     pub pa2:      Vec<u8>,
     pub pa3:      Vec<u8>,
-    pub settings: Settings
+    pub settings: Config
 }
 
-pub struct Settings {
-    pub sound:    bool,
-    pub color:    bool,
-    pub infinite: bool
+#[derive(Debug, Deserialize)]
+pub struct Config {
+    pub sound:        bool,
+    pub color:        bool,
+    pub infinite_inv: bool
 }
 
 pub struct Map {

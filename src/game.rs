@@ -187,6 +187,7 @@ pub fn navigate_path(path: &Vec<u8>, mut area: u8) -> u8 {
     };
 
     println!("{}", biome);
+    // Just make sure they use the right action.
     loop {
         let action = actions(0);
         match &action[..] {
@@ -254,36 +255,36 @@ fn look_around(biome: u8) {
         // 0 is a forest, 1 is a town, 2 is hills, 3 is an outpost, 4 is a desert, 5 is a swamp,
         //   and 6 is a hideout.
         | 0 => {
-            println!("You look around, the trees are far taller than you and the father the forest goes, the less light hits the\n\r\
+            print!("You look around, the trees are far taller than you and the father the forest goes, the less light hits the\n\r\
                       ground. You hear sounds of movement but you can't identify anything. There seems to be foot prints in the mud\n\r\
                       and you see arrows sticking out of the ground just up ahead.");
         },
         | 1 => {
-            println!("The townsfolk seem friendly. The pavement on the ground forms a diamond pattern and it looks like it's\n\r\
+            print!("The townsfolk seem friendly. The pavement on the ground forms a diamond pattern and it looks like it's\n\r\
                       made out of stone. The buildings are made out of wood or stone painted white with limestone.");
         },
         | 2 => {
-            println!("The hills are very steep, almost mountainous and you can see birds flying overhead. There is no where to hide\n\r\
+            print!("The hills are very steep, almost mountainous and you can see birds flying overhead. There is no where to hide\n\r\
                       should any enemies find you atop one of the hills. You see reminents of a camp inbetween some of the hills.");
         },
         | 3 => {
-            println!("You can see the base is made out of placed rocks with some sort of limestone mix holding them togethor. The\n\r\
+            print!("You can see the base is made out of placed rocks with some sort of limestone mix holding them togethor. The\n\r\
                       middle of the outpost is made from wood, it seems to be weakened and cheap. At the top you see archers in\n\r\
                       steal chainmail and with wooden bows. You see a body hung from the top with a sign but you can't make out the\n\r\
                       words.");
         },
         | 4 => {
-            println!("As you glance among the landscape you see only yellows and faint greens. There are small shrubs in between\n\r\
+            print!("As you glance among the landscape you see only yellows and faint greens. There are small shrubs in between\n\r\
                       the sand. You can easily be spotted from the sand dunes and you begin to feel hot; no water is in sight. On\n\r\
                       one of the dunes you can see the sand painted red by a body; you feel uneasy.");
         },
         | 5 => {
-            println!("The water is murky and the ground is littered with mud. The trees here cast dark shadows as they lay in the\n\r\
+            print!("The water is murky and the ground is littered with mud. The trees here cast dark shadows as they lay in the\n\r\
                       murky waters. You see ripples in the water, and hear the sounds of snakes and gators. There are bloody\n\r\
                       remains of some sort of men.")
         },
         | 6 => {
-            println!("You look around, the trees are far taller than you and the father the forest goes, the less light hits the\n\r\
+            print!("You look around, the trees are far taller than you and the father the forest goes, the less light hits the\n\r\
                       ground. You hear sounds of movement but you can't identify anything. There seems to be foot prints in the mud\n\r\
                       and you see arrows sticking out of the ground just up ahead.");
         },
@@ -291,6 +292,7 @@ fn look_around(biome: u8) {
             panic!("Uhh, this area doesn't exist or it doesn't support looking around.");
         }
     }
+    println!("\nWhat do you do?");
 }
 
 fn encounter_enemy(area: u8, biome: &str, seed: u64) {
