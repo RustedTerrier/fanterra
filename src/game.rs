@@ -295,6 +295,6 @@ fn look_around(biome: u8) {
 
 fn encounter_enemy(area: u8, biome: &str, seed: u64) {
     // Plan for now: the farther along the path the harder the enemies and better the loot. Seed
-    // determines the drop and there are 4 drops on each possible area and after 4 battle syou have
+    // determines the drop and there are 4 drops on each possible area and after 4 battles you have
     // them all.
 }
