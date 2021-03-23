@@ -189,14 +189,14 @@ fn config(home: String) -> Settings {
         panic!("Bad config file.");
     }
     else {
-        let mut lines: Vec<&str> = Vec::new();
+        let lines: Vec<&str>;
         lines = config_file_contents.split('\n').collect();
 
         for c in lines {
-            if c.chars().nth(0) == Some('m')
-                || c.chars().nth(0) == Some('c')
-                || c.chars().nth(0) == Some('i')
-                || c.chars().nth(0) == Some('#')
+            if c.chars().nth(0) != Some('m')
+                && c.chars().nth(0) != Some('c')
+                && c.chars().nth(0) != Some('i')
+                && c.chars().nth(0) != Some('#')
             {
                 panic!("Bad config file.");
             }
