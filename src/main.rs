@@ -58,7 +58,9 @@ fn start_screen() {
 
         let worldnum = world.replace("\n", "").parse::<u32>().unwrap() - 1;
         let worldsplit: Vec<&str> = worlds_string.split("\n").collect();
-        world = worldsplit[worldnum as usize].to_string();
+        world = worldsplit[worldnum as usize]
+            .to_string()
+            .replace("  | ", "");
         world = world[2 ..].to_string();
 
         play_game(world);

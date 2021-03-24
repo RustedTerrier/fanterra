@@ -62,9 +62,9 @@ pub fn start_game(seed: u64, map1: Vec<u8>, map2: Vec<u8>, map3: Vec<u8>) -> Gam
         A group of goblins invade the town.\n\
         You run to hide and they don't notice you. As you hide, you hear sounds of destruction.\n\
         You leave your hiding spot and see an old man crawl out from the rubble, he seems weary.\n\
-        He approaches you. The old man talks to you: \"There is a castle down that road, I've seen it with my own eyes, \n\
-        full of goblins, catapults, and other siege weapons. You must go there, kill the general and burn the catapults\n\
-        if you wish to save the kingdom.\"");
+        He approaches you. The old man talks to you: \"There is a castle down that road, I've seen it with my own\n\
+        eyes, full of goblins, catapults, and other siege weapons. You must go there, kill the general and burn the\n\
+        catapults if you wish to save the kingdom.\"");
     let weapon = match player.class {
         | 1 => "Wooden Club",
         | 2 => "Earth Staff",
@@ -81,9 +81,9 @@ pub fn start_game(seed: u64, map1: Vec<u8>, map2: Vec<u8>, map3: Vec<u8>) -> Gam
 
     // Tell location of one town
     println!("\n\
-    Before you leave, the old man talks to you again: \"There is a town on the left path after the fork, it's close \n\
-        by and they will help you if you're hurt.\"\n\
-        Then he leaves, and you embark on your journey.\n");
+    Before you leave, the old man talks to you again: \"There is a town on the left path after the fork, it's \n\
+    close by and they will help you if you're hurt.\"\n\
+    Then he leaves, and you embark on your journey.\n");
 
     // Start the journey
     println!("You walk down the given path and the journey is uneventful up until a fork in the road. You remember the old\n\

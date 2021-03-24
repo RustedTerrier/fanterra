@@ -173,9 +173,11 @@ pub fn get_config(home: String) -> Config {
     if !Path::new(&path).exists() {
         fs::write(
             &path,
-            "(\nsound: true,\ncolor: false,\ninfinite_inv: false\n)"
+            "Config(\n\
+            // These can either be true or false\n    sound: true,\n    color: false,\n    infinite_inv: false\n\
+            )"
         )
-        .expect("Error creating config file, please create ~/.fanterra/init.config.");
+        .expect("Error creating config file, please create ~/.fanterra/init.ron.");
     }
     let config_file_contents: String = fs::read_to_string(&path).unwrap();
     let config: Config = match from_str(&config_file_contents[..]) {
@@ -248,14 +250,14 @@ pub fn read_worlds(home: String) -> Vec<String> {
         let item = i.unwrap().path().display().to_string();
         let v2: Vec<&str> = item.split(".fanterra/worlds/").collect();
         let world_name_real = format!("{}", v2[v2.len() - 1].to_string());
-        v.push(format!("{}{}\n", j_s, world_name_real));
+        v.push(format!("  | {}{}\n", j_s, world_name_real));
     }
 
     v
 }
 
 fn read_file(world: &String, home: &String) -> u64 {
-    let path = format!("{}/.fanterra/worlds/{}", home, world);
+    let path = format!("{}/.fanterra/worlds/{}", home, world.replace("  | ", ""));
     let file = fs::read(path).unwrap();
     let bytes: [u8; 8] = [
         file[0], file[1], file[2], file[3], file[4], file[5], file[6], file[7]

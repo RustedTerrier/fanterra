@@ -5,7 +5,6 @@ authors = ["RustedTerrier <RustedTerrier@tutanota.com>"]
 edition = "2018"
 description = "Generate seeded fantasy RPG worlds for a new game every time."
 license = "BSD-3-Clause"
-license-file = "LICENSE.txt"
 repository = "https://github.com/RustedTerrier/fanterra"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
