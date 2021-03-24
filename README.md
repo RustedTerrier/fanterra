@@ -1,7 +1,7 @@
 # Fanterra
 #### Generate seeded fantasy RPG worlds for a new game every time.
 
-## FAQ
+## Q&A
 
 * What is Fanterra?
   * Fanterra is a text based game I'm making with a focus on exploration, so no maps to give everything away.
