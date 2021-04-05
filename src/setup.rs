@@ -169,7 +169,7 @@ fn change_seed(mut number: u64) -> u64 {
 }
 
 pub fn get_config(home: String) -> Config {
-    let path = format!("{}/.fanterra/init.ron", home);
+    let path = format!("{}/.fanterra/config.ron", home);
     if !Path::new(&path).exists() {
         fs::write(
             &path,

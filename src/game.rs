@@ -299,4 +299,64 @@ fn encounter_enemy(area: u8, biome: &str, seed: u64) {
     // Plan for now: the farther along the path the harder the enemies and better the loot. Seed
     // determines the drop and there are 4 drops on each possible area and after 4 battles you have
     // them all.
+    //
+    // Forest Enemies:
+    // 1: Ratt, Wolf
+    // 2: Wolf, Owl
+    // 3: Warg, Eagle
+    // 4: Bear, Giant Owl
+    // 5: Bandit, Archer
+    // 6: Warg-Rider, Soldier
+    // 7: Soldiers, Doleney(Tree-Person)
+    // 8+: Spearmen, Klorx
+    //
+    // Hill Enemies:
+    // 1: Rat, Weeds
+    // 2: Bobcat, Sparrow,
+    // 3: Zombie, Owl,
+    // 4: Weeping Willow, Goblin
+    // 5: Adventurer, Undead
+    // 6: Undead, Troll
+    // 7: Undead, Ogre,
+    // 8+: Ogre, Undead
+    //
+    // Outpost Enemies:
+    // 1: Scout, Mouse
+    // 2: Soldier, Crossbowman
+    // 3: Soldier, Swordsman
+    // 4: Spearmen, Archer
+    // 5: Yentu(Tanky guy), Soldiers
+    // 6: Kralkon(Very Fast, moderate tank), Yentu
+    // 7: Kralkons, Yentus
+    // 8+: Cafras(Extremely high attack), Srew(Kralkon and Yentu togethor)
+    //
+    // Desert Enemies:
+    // 1: Scorpions, Fox
+    // 2: Begino(Giant Beetle), Scout
+    // 3: Camel, Eraldun(Giant cat type thing)
+    // 4: Eraldun, Begino
+    // 5: Soldier, Eraldun
+    // 6: Est(Giant Worm), Soldier
+    // 7: Est, Adventurer
+    // 8+: Sand-Dragon, Sand-Mage
+    //
+    // Swamp Enemies:
+    // 1: Piranha, Snapping Turtle
+    // 2: Barracuda, Piranha
+    // 3: Snake, Tyosil(Giant Frog)
+    // 4: Tyosil, Eel
+    // 5: Octopus, Soldier
+    // 6: Crocodile, White-snake
+    // 7: Yentu, Crocodile
+    // 8+: Crocodile, Yentu
+    //
+    // Hideout Enemies:
+    // 1: Bandit, Scout
+    // 2: Soldier, Archer
+    // 3: Warg, Soldier
+    // 4: Soldiers, Spearmen
+    // 5: Soldiers, Bear
+    // 6: Adventurer, Executer
+    // 7: Executer, Yentu
+    // 8+: Executer, Rogue
 }
